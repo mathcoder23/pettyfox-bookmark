@@ -123,6 +123,18 @@ export class SonicService {
         await ingest.push("message", "default", "123", "测试你好")
         let results = await search.query("message", "default", "测试")
         console.log('aaaaa', results)
+    }
 
+    async searchData(collection, bucket,  text): Promise<string[]> {
+        let search = await this.getSearch()
+        let results = await search.query(collection, bucket, text)
+        return results
+    }
+
+    addData(collection, bucket, object, text): void {
+        this.getIngest().then((ingest) => {
+            ingest.push(collection, bucket, object, text).then(r => {
+            })
+        })
     }
 }
