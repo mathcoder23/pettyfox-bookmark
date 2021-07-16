@@ -33,7 +33,7 @@ export class BookmarkService {
         let rs = []
         console.log('results', results)
         for (let item of results) {
-            console.log('item', item)
+            console.log('item', item, await this.redis.hget(BookmarkService.KEY, item))
             rs.push(JSON.parse(await this.redis.hget(BookmarkService.KEY, item)))
         }
         return rs

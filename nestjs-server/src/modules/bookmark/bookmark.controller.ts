@@ -11,9 +11,9 @@ export class BookmarkController {
 
 
     @Get('search')
-    search(@Query("keyword") keyword: string): ObjResponse {
+    async search(@Query("keyword") keyword: string): Promise<ObjResponse> {
         console.log('ke', keyword)
-        return ObjResponse.ok(this.bookmarkService.search(keyword))
+        return ObjResponse.ok(await this.bookmarkService.search(keyword))
     }
 
     @Post('add')
