@@ -1,7 +1,7 @@
 let app = new Vue({
     el: '#app',
     data: {
-        baseUrl: 'http://localhost:3000',
+        baseUrl: 'http://api.pettyfox.top:10004',
         message: 'Hello Vue!',
         search: '',
         currentSelect: {},
