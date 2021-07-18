@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  # 核心服务
+  nestjs-bookmark:
+    build:
+      context: ../nestjs-server
+      dockerfile: Dockerfile
+    image: nestjs-bookmark:1.0
+    environment:
+      REDIS_HOST: "192.168.2.131"
+      SONIC_HOUST: "192.168.2.131"
+    ports:
+      - "10004:3000" # minio api server

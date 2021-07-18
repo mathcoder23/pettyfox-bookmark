@@ -1,0 +1,61 @@
+<html>
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>小狐书签</title>
+    <link rel="stylesheet" media="screen" href="list/style.css">
+
+<body>
+<style>
+    body {
+        margin: 0;
+    }
+</style>
+<div id="app">
+    <div class="edit">
+        <div class="form">
+            <div class="title">
+                Name
+            </div>
+            <div class="item">
+                <input v-model="form.name"/>
+            </div>
+        </div>
+        <div class="form">
+            <div class="title">
+                Groups
+            </div>
+            <div class="item">
+                <input v-model="form.groups"/>
+            </div>
+        </div>
+        <div class="form w2">
+            <div class="title">
+                Url
+            </div>
+            <div class="item">
+                <input v-model="form.url"/>
+            </div>
+        </div>
+        <div class="form w2">
+            <div class="title">
+                Description
+            </div>
+            <div class="item">
+                <input type="textarea" v-model="form.desc"/>
+            </div>
+        </div>
+        <div>
+            <button class="edit-btn" @click="clickSave">保存</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/vue-2.6.14.js"></script>
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="popup.js"></script>
+
+
+</body>
+</html>

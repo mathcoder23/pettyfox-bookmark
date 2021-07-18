@@ -1,0 +1,99 @@
+<html>
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>小狐书签</title>
+
+    <link rel="stylesheet" media="screen" href="search/style.css">
+    <link rel="stylesheet" media="screen" href="nav/style.css">
+    <link rel="stylesheet" media="screen" href="list/style.css">
+    <link rel="stylesheet" media="screen" href="layer-v3.5.1/layer/theme/default/layer.css">
+
+<body>
+<style>
+    body {
+        background: url("images/bg2.jpg") no-repeat center center fixed;
+        /*兼容浏览器版本*/
+        -webkit-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+</style>
+<div id="app">
+    <div class="leftNav-item">
+        <ul>
+            <li v-for="item in menuList" @click="clickMenu(item)">
+                <span class="rota" :class="{'select':item.name===currentSelect.name}">{{item.name}}</span>
+            </li>
+        </ul>
+    </div>
+    {{message}}
+    <div class="search search--open">
+        <form class="search__form" action="">
+            <input v-model="search" class="search__input" name="search" type="search"
+                   placeholder="Search" autocomplete="off" autofocus="autofocus" autocapitalize="off"
+                   spellcheck="false">
+            <span class="search__info">easy search</span>
+        </form>
+    </div>
+    <div style="margin-left:60px">
+        <div class="list">
+            <div class="item" v-for="item in list" @click="clickItem(item)" @dblclick="clickEdit(item)">
+                <div class="item-name"><span>{{item.name}}</span></div>
+                <div class="item-desc">{{item.desc}}</div>
+            </div>
+            <div class="item" @click="clickCreate" v-if="this.search.length === 0">
+                <div class="item-plus">
+                    +
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="edit" style="display: none">
+        <div class="form">
+            <div class="title">
+                Name
+            </div>
+            <div class="item">
+                <input v-model="form.name"/>
+            </div>
+        </div>
+        <div class="form">
+            <div class="title">
+                Groups
+            </div>
+            <div class="item">
+                <input v-model="form.groups"/>
+            </div>
+        </div>
+        <div class="form w2">
+            <div class="title">
+                Url
+            </div>
+            <div class="item">
+                <input v-model="form.url"/>
+            </div>
+        </div>
+        <div class="form w2">
+            <div class="title">
+                Description
+            </div>
+            <div class="item">
+                <input type="textarea" v-model="form.desc"/>
+            </div>
+        </div>
+        <div>
+            <button class="edit-btn" @click="clickSave">保存</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/vue-2.6.14.js"></script>
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="layer-v3.5.1/layer/layer.js"></script>
+<script src="index.js"></script>
+
+
+</body>
+</html>

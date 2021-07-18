@@ -1,0 +1,102 @@
+.list {
+    display: flex;
+    flex-flow: wrap;
+    width: 80%;
+    justify-content: center;
+    align-content: center;
+    margin: 0 auto;
+}
+
+.list .item {
+    border-radius: 5px;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, .2);
+    width: 250px;
+    height: 100px;
+    background: rgba(32, 33, 36, 0.9);
+    margin: 20px;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.list .item .item-plus {
+    font-size: 4vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.list .item:hover {
+    box-shadow: 0 2px 5px #13E8E9;
+}
+
+.list .item .item-name {
+    padding: 10px;
+    border-bottom: 1px solid #13E8E9;
+}
+
+.list .item .item-desc {
+    color: grey;
+    padding: 10px;
+}
+
+.edit {
+    width: 420px;
+    padding: 10px;
+    background: rgba(32, 33, 36, 0.9);
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.edit .form {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+}
+
+.edit .w2 {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+}
+
+.edit .form input {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 8px 12px;
+    border-style: solid;
+    border-width: 1px;
+    font-size: 14px;
+    line-height: 1.3;
+    border-radius: 4px;
+    transition: border-color .2s ease-in-out;
+    outline: none;
+    margin: 0;
+    font-family: inherit;
+    background-color: hsla(0, 0%, 100%, .04);
+    color: white;
+}
+
+.edit .form .title {
+    color: hsla(0, 0%, 100%, .4);
+    margin: 10px;
+}
+
+.edit-btn {
+    margin-top: 5px;
+    text-align: center;
+    padding: 8px 16px;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    border: 0;
+    line-height: 1.3;
+    color: white;
+    background-color: #1686f0;
+    user-select: none;
+}

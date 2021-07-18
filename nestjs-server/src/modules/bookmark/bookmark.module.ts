@@ -4,11 +4,11 @@ import {BookmarkController} from "./bookmark.controller";
 import {SonicModule} from "../sonic/sonic.module";
 import {RedisModule} from "@liaoliaots/nestjs-redis";
 
-
+let redisHost = process.env.REDIS_HOST
 @Module({
     imports: [SonicModule, RedisModule.forRoot({
         config: {
-            host: 'localhost',
+            host: redisHost,
             port: 6379,
             db: 1
 

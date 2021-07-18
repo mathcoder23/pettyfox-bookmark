@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {Ingest, Search} from "sonic-channel/lib/sonic_channel";
 
-
+let sonicHost = process.env.SONIC_HOST
 @Injectable()
 export class SonicService {
     search = null
@@ -14,7 +14,7 @@ export class SonicService {
                 return
             }
             let tempSearch = new Search({
-                host: "127.0.0.1",            // Or '127.0.0.1' if you are still using IPv4
+                host: sonicHost,            // Or '127.0.0.1' if you are still using IPv4
                 port: 1491,             // Default port is '1491'
                 auth: "SecretPassword"  // Authentication password (if any)
             }).connect({
@@ -69,7 +69,7 @@ export class SonicService {
                 return
             }
             let tempSearch = new Ingest({
-                host: "127.0.0.1",            // Or '127.0.0.1' if you are still using IPv4
+                host: sonicHost,            // Or '127.0.0.1' if you are still using IPv4
                 port: 1491,             // Default port is '1491'
                 auth: "SecretPassword"  // Authentication password (if any)
             }).connect({
