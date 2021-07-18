@@ -5,11 +5,13 @@ import {SonicModule} from "../sonic/sonic.module";
 import {RedisModule} from "@liaoliaots/nestjs-redis";
 
 let redisHost = process.env.REDIS_HOST
+let redisPort = process.env.REDIS_PORT
+
 @Module({
     imports: [SonicModule, RedisModule.forRoot({
         config: {
             host: redisHost,
-            port: 6379,
+            port: parseInt(redisPort),
             db: 1
 
             // or with URL
