@@ -1,0 +1,105 @@
+{
+	"info": {
+		"_postman_id": "01441dc9-9c0a-466b-9254-2bb82c4b2bfe",
+		"name": "Pettyfox Bookmark Private",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "获取书签列表",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/bookmark/list",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"bookmark",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "书签搜索",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/bookmark/search?keyword=123",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"bookmark",
+						"search"
+					],
+					"query": [
+						{
+							"key": "keyword",
+							"value": "123"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "新建书签",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"url\": \"http://csdn.com\",\r\n    \"desc\": \"这是书签\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/bookmark/add",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"bookmark",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "删除书签",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ids\": [\"698d51a19d8a121ce581499d7b701668\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/bookmark/remove",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"bookmark",
+						"remove"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
