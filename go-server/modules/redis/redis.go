@@ -19,11 +19,11 @@ func InitRedis() {
 		IdleTimeout: 300 * time.Second, //连接关闭时间 300秒 （300秒不使用自动关闭）
 		Dial: func() (redis.Conn, error) { //要连接的redis数据库
 			c, err := redis.Dial(RedisConf["type"], RedisConf["address"])
-			fmt.Println("ok")
+
 			if err != nil {
+				println("redis error", err)
 				return nil, err
 			}
-			fmt.Println("ok")
 			if RedisConf["auth"] != "" {
 				if _, err := c.Do("AUTH", RedisConf["auth"]); err != nil {
 					c.Close()
@@ -33,7 +33,7 @@ func InitRedis() {
 			}
 			c.Do("select", RedisConf["db"])
 
-			fmt.Println("ok")
+			fmt.Println("redis ok")
 			return c, nil
 		},
 	}

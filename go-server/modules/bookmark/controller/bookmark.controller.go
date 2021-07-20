@@ -8,9 +8,17 @@ import (
 
 func List(ctx iris.Context) {
 	list := service.List()
+	ctx.JSON(bookmark.ObjResponseOk(list))
+	// TIP: negotiate the response between server's prioritizes
+	// and client's requirements, instead of ctx.JSON:
+	// ctx.Negotiation().JSON().MsgPack().Protobuf()
+	//ctx.Negotiate(books)
 
-	service.Search(ctx.URLParam("keyword"))
-	ctx.JSON(list)
+}
+func Search(ctx iris.Context) {
+	list := service.Search(ctx.URLParam("keyword"))
+
+	ctx.JSON(bookmark.ObjResponseOk(list))
 	// TIP: negotiate the response between server's prioritizes
 	// and client's requirements, instead of ctx.JSON:
 	// ctx.Negotiation().JSON().MsgPack().Protobuf()

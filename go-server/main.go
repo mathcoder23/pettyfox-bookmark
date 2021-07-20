@@ -15,6 +15,7 @@ func main() {
 	{
 		bookmarkApi.Use(iris.Compression)
 		bookmarkApi.Get("/list", bookmarkController.List)
+		bookmarkApi.Get("/search", bookmarkController.Search)
 		bookmarkApi.Post("/remove", bookmarkController.Remove)
 		bookmarkApi.Post("/save", bookmarkController.Save)
 		bookmarkApi.Post("/add", bookmarkController.Save)
