@@ -8,10 +8,10 @@ services:
       dockerfile: Dockerfile
     image: go-bookmark:1.1
     environment:
-      REDIS_ADDRESS: "172.16.10.253:10069"
+      REDIS_ADDRESS: "172.17.0.2:10069"
       REDIS_AUTH: "redis"
       REDIS_DB: "2"
-      SONIC_HOST: "172.16.10.185"
+      SONIC_HOST: "172.17.0.2"
       SONIC_PORT: "1491"
       SONIC_PASSWORD: "SecretPassword"
     ports:
