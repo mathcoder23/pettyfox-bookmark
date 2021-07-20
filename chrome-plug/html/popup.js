@@ -69,6 +69,7 @@ let app = new Vue({
             if (this.form.url && this.form.url.length > 0) {
                 $.post(this.baseUrl + '/bookmark/add', this.form, (result) => {
                     console.log('aaa', result)
+                    window.close()
                 });
             } else {
                 layer.msg("请输入url地址")

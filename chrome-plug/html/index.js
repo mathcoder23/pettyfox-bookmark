@@ -1,3 +1,4 @@
+
 let app = new Vue({
     el: '#app',
     data: {
@@ -76,6 +77,21 @@ let app = new Vue({
                 layer.msg("请输入url地址")
             }
         },
+        // batchCreate() {
+        //
+        //     for (let key in temp.data.iconDict) {
+        //         let item = temp.data.iconDict[key]
+        //         let obj = {
+        //             name: item.label,
+        //             url: item.url,
+        //             desc: item.desc
+        //         }
+        //         $.post(this.baseUrl + '/bookmark/add', obj, (result) => {
+        //
+        //         });
+        //         console.log('obj', obj)
+        //     }
+        // },
         clickCreate() {
             this.form = {}
             layer.open({
