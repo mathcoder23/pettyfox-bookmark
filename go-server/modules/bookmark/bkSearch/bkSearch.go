@@ -2,70 +2,42 @@ package bkSsearch
 
 import (
 	"fmt"
-	"github.com/gomodule/redigo/redis"
-	. "pettyfox.top/bookmark/conf"
+	"github.com/RediSearch/redisearch-go/redisearch"
+	"log"
+	"pettyfox.top/bookmark/conf"
 	"pettyfox.top/bookmark/modules/bookmark"
 	"pettyfox.top/bookmark/modules/word"
 	"strings"
-	"time"
 )
 
-var RedisClient *redis.Pool
+var rc *redisearch.Client
+var ac *redisearch.Autocompleter
 
 func Init() {
-	// 建立连接池
-	RedisClient = &redis.Pool{
-		// 从配置文件获取maxidle以及maxactive，取不到则用后面的默认值
-		MaxIdle: 16, //最初的连接数量
-		// MaxActive:1000000,    //最大连接数量
-		MaxActive:   0,                 //连接池最大连接数量,不确定可以用0（0表示自动定义），按需分配
-		IdleTimeout: 300 * time.Second, //连接关闭时间 300秒 （300秒不使用自动关闭）
-		Dial: func() (redis.Conn, error) { //要连接的redis数据库
-			c, err := redis.Dial(RedisSearchConf["type"], RedisSearchConf["address"])
+	rc = redisearch.NewClient(conf.RedisSearchConf["address"], "bk_index_1")
+	ac = redisearch.NewAutocompleter(conf.RedisSearchConf["address"], "bk_ac_1")
+	// Create a schema
+	sc := redisearch.NewSchema(redisearch.DefaultOptions).
+		AddField(redisearch.NewTextField("id")).
+		AddField(redisearch.NewTextField("desc")).
+		AddField(redisearch.NewTextFieldOptions("name", redisearch.TextFieldOptions{Weight: 5.0, Sortable: true})).
+		AddField(redisearch.NewTextField("url"))
 
-			if err != nil {
-				fmt.Printf("redis err:%v", err)
-				println("redis search error", err)
-				return nil, err
-			}
-			if RedisSearchConf["auth"] != "" {
-				if _, err := c.Do("AUTH", RedisSearchConf["auth"]); err != nil {
-					c.Close()
-					fmt.Println("redis password error", err)
-					return nil, err
-				}
-			}
-			c.Do("select", RedisSearchConf["db"])
-
-			fmt.Println("redis search ok")
-			return c, nil
-		},
+	// Drop an existing index. If the index does not exist an error is returned
+	rc.Drop()
+	// Create the index with the given schema
+	if err := rc.CreateIndex(sc); err != nil {
+		log.Fatal(err)
 	}
-	initIndex()
 }
-func initIndex() {
-	println("init redis search")
-	rc := RedisClient.Get()
-	defer rc.Close()
-	rp, err := rc.Do("FT.CREATE",
-		"bk_index_1", "ON", "HASH", "PREFIX", "1", "bk_doc", "SCHEMA",
-		"name", "TEXT",
-		"url", "TEXT",
-		"desc", "TEXT",
-	)
-	if err != nil {
-		fmt.Printf("redis search err:%v", err)
-	}
-	fmt.Printf("search rp:%v", rp)
-
+func removeDocIndex(bookmarkId string) {
+	rc.DeleteDocument(bookmarkId)
+	//TODO 清理SUGGEST，根据推入的关键词计数器来清理，如果计数器为0，删除对应的建议
 }
-
-func SetIndex(userId string, bookmark bookmark.Bookmark) {
+func SetDocIndex(userId string, bookmark bookmark.Bookmark) {
 	if len(bookmark.Id) == 0 || len(bookmark.Url) == 0 {
 		return
 	}
-	rc := RedisClient.Get()
-	defer rc.Close()
 	nameIndex := ""
 	descIndex := ""
 	urlIndex := ""
@@ -75,7 +47,7 @@ func SetIndex(userId string, bookmark bookmark.Bookmark) {
 		println(nameSplit, nameIndex)
 		//添加建议
 		for _, s := range nameSplit {
-			rc.Do("FT.SUGADD", "ac:"+userId, s, "1")
+			ac.AddTerms(redisearch.Suggestion{Term: s})
 		}
 	}
 	if len(bookmark.Desc) > 0 {
@@ -84,7 +56,7 @@ func SetIndex(userId string, bookmark bookmark.Bookmark) {
 
 		//添加建议
 		for _, s := range descSplit {
-			rc.Do("FT.SUGADD", "ac:"+userId, s, "1")
+			ac.AddTerms(redisearch.Suggestion{Term: s})
 		}
 	}
 	if len(bookmark.Url) > 0 {
@@ -93,19 +65,23 @@ func SetIndex(userId string, bookmark bookmark.Bookmark) {
 
 		//添加建议
 		for _, s := range urlSplit {
-			rc.Do("FT.SUGADD", "ac:"+userId, s, "1")
+			ac.AddTerms(redisearch.Suggestion{Term: s})
 		}
 	}
+	doc := redisearch.NewDocument("bk_doc_"+bookmark.Id, 1.0)
+	doc.Set("id", bookmark.Id)
 	//建立索引
 	if len(nameIndex) > 0 {
-		rp, err := rc.Do("HSET", "bk_doc_"+bookmark.Id, "name", nameIndex)
-		fmt.Printf("set index:%v,%v", rp, err)
+		doc.Set("name", nameIndex)
 	}
 	if len(urlIndex) > 0 {
-		rc.Do("HSET", "bk_doc_"+bookmark.Id, "url", urlIndex)
+		doc.Set("url", urlIndex)
 	}
 	if len(descIndex) > 0 {
-		rc.Do("HSET", "bk_doc_"+bookmark.Id, "desc", descIndex)
+		doc.Set("desc", urlIndex)
+	}
+	if err := rc.Index(doc); err != nil {
+		log.Fatal(err)
 	}
 
 }
@@ -113,12 +89,23 @@ func Search(userId, word string, offset, limit int) {
 	if len(word) == 0 {
 		return
 	}
-	rc := RedisClient.Get()
-	defer rc.Close()
-	rp, err := redis.(rc.Do("FT.SEARCH", "bk_index_"+userId, word, "LIMIT", offset, limit))
+	docs, total, err := rc.Search(redisearch.NewQuery(word).
+		Limit(offset, limit).
+		SetReturnFields("id"))
 	if err != nil {
-		fmt.Printf("redis search err:%v", err)
+		log.Fatal(err)
 	}
 
-	fmt.Printf("search rp:%v", rp)
+	fmt.Printf("search totoal:%v rp:%v", total, docs)
+}
+func Suggest(userId, word string, offset, limit int) {
+	if len(word) == 0 {
+		return
+	}
+	ss, err := ac.SuggestOpts(word, redisearch.DefaultSuggestOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("search  suggest:%v", ss)
 }
