@@ -7,14 +7,21 @@ import (
 )
 
 var seg jiebago.Segmenter
+
 func init() {
 	seg.LoadDictionary("dict.txt")
 }
 func Word2Index(word string) []string {
 	rs := make([]string, 0)
+	if len(word) == 0 {
+		return rs
+	}
 	results := seg.CutForSearch(word, true)
 	for item := range results {
-		println("text:", item)
+		if len(strings.TrimSpace(item)) == 0 {
+			continue
+		}
+		//println("text:", item)
 		rs = append(rs, item)
 
 		pinyinFullArgs := pinyin.NewArgs()

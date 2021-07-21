@@ -7,9 +7,6 @@
     text-align: center;
 }
 
-body {
-    font-family: 'Inconsolata', 'Monaco', monospace;
-}
 
 .search__form {
     margin: 5em 0;

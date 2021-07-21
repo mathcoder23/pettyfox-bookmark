@@ -1,8 +1,9 @@
-
 let app = new Vue({
     el: '#app',
     data: {
-        baseUrl: 'http://api.pettyfox.top:10004',
+        menuVisible: false,
+        // baseUrl: 'http://api.pettyfox.top:10004',
+        baseUrl: 'http://localhost:8080',
         message: 'Hello Vue!',
         search: '',
         currentSelect: {},
@@ -64,6 +65,10 @@ let app = new Vue({
         },
         clickMenu(item) {
             this.currentSelect = item
+        },
+        openMenu(e, item) {
+            console.log(e, item)
+            this.menuVisible = true;
         },
         clickSave() {
             console.log('aa', this.form)

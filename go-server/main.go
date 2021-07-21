@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/iris-contrib/middleware/cors"
 	"github.com/kataras/iris/v12"
+	bkSsearch "pettyfox.top/bookmark/modules/bookmark/bkSearch"
 	bookmarkController "pettyfox.top/bookmark/modules/bookmark/controller"
 	"pettyfox.top/bookmark/modules/redis"
 	"pettyfox.top/bookmark/modules/sonicCli"
@@ -16,11 +17,15 @@ func main() {
 	})
 	redis.InitRedis()
 	sonicCli.InitSonicCli()
+	bkSsearch.Init()
 	bookmarkApi := app.Party("/bookmark", crs).AllowMethods(iris.MethodOptions)
 	{
 		bookmarkApi.Use(iris.Compression)
 		bookmarkApi.Get("/list", bookmarkController.List)
+		bookmarkApi.Post("/resetIndex", bookmarkController.ResetIndex)
+		bookmarkApi.Get("/getIndex", bookmarkController.GetIndex)
 		bookmarkApi.Get("/search", bookmarkController.Search)
+		bookmarkApi.Get("/searchSuggest", bookmarkController.SearchSuggest)
 		bookmarkApi.Post("/remove", bookmarkController.Remove)
 		bookmarkApi.Post("/save", bookmarkController.Save)
 		bookmarkApi.Post("/add", bookmarkController.Save)
