@@ -14,11 +14,11 @@
     "tabs"
   ],
   "chrome_url_overrides": {
-    "newtab": "html/index.html"
+    "newtab": "dist/index.html"
   },
   "browser_action": {
     "default_title": "",
     "default_icon": "icons/128x128.png",
-    "default_popup": "html/popup.html"
+    "default_popup": "dist/popup.html"
   }
 }

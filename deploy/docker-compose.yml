@@ -1,6 +1,14 @@
 version: '3.7'
 
 services:
+  # redisSearch搜索服务
+  redissearch:
+    image: redislabs/redisearch:latest
+    volumes:
+      - ./redis.conf:/etc/redis/redis.conf
+      - rs_data:/data
+    ports:
+      - "6380:6379"
   # 核心服务
   go-bookmark:
     build:

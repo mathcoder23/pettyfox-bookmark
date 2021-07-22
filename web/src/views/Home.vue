@@ -209,7 +209,6 @@
 
 <style>
     body {
-        background: url("../assets/bg2.jpg") no-repeat center center fixed;
         /*兼容浏览器版本*/
         -webkit-background-size: cover;
         -o-background-size: cover;

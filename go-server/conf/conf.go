@@ -13,11 +13,7 @@ var RedisConf = map[string]string{
 	"auth":    os.Getenv("REDIS_AUTH"),
 }
 var RedisSearchConf = map[string]string{
-	"name":    "redis",
-	"type":    "tcp",
-	"db":      "0",
-	"address": "127.0.0.1:6380",
-	"auth":    os.Getenv("REDIS_AUTH"),
+	"address": "redissearch:6380"
 }
 var SonicConf = map[string]string{
 	"host":     os.Getenv("SONIC_HOST"),

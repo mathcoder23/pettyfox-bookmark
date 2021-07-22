@@ -1,4 +1,4 @@
-import {CoreApi} from "../core/CoreApi";
+import {CoreApi} from "../core/api/core/CoreApi";
 
 export const BookmarkApi = {
     list: () => {

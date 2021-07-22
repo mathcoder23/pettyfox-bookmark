@@ -3,7 +3,7 @@ import {StrUtil} from "../../utils/StrUtil";
 
 let request = null
 let axios = null
-let baseUrl = 'http://127.0.0.1:8080'
+let baseUrl = ''
 let qsString = (params, init = 0) => {
     let qs = ""
     if ("object" === typeof params) {
@@ -36,7 +36,7 @@ function delCookie() {
     }
 }
 
-let init = (url, ax) => {
+let init = (url) => {
     baseUrl = url
     axios = ax
     if (axios == null) {
@@ -192,12 +192,13 @@ const apiList = (config, params) => {
     })
 
 }
-init(baseUrl, ax)
+
 /**
  * 目前暂定api接口返回的都是数据，逻辑分离的。即resolve返回数据，当状态码异常在reject中
  * @type {{init: init, request: null, driver: null, intercept: null, notify: null, url: null, apiList: (function(*=, *=): Promise<any>), apiGet: (function(*=, *=): Promise<any>), apiPost: (function(*=, *=, *): Promise<any>), apiPut: (function(*=, *=, *): Promise<any>), apiDel: (function(*=, *=, *): Promise<any>)}}
  */
 export const CoreApi = {
+    init:init,
     apiList: apiList,
     apiGet: apiGet,
     apiFormPost: apiFormPost,
