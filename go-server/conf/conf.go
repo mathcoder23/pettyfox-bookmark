@@ -1,7 +1,7 @@
 package conf
 
 import (
-	"fmt"
+	"log"
 	"os"
 )
 
@@ -13,15 +13,10 @@ var RedisConf = map[string]string{
 	"auth":    os.Getenv("REDIS_AUTH"),
 }
 var RedisSearchConf = map[string]string{
-	"address": "redissearch:6380"
-}
-var SonicConf = map[string]string{
-	"host":     os.Getenv("SONIC_HOST"),
-	"port":     os.Getenv("SONIC_PORT"),
-	"password": os.Getenv("SONIC_PASSWORD"),
+	"address": "redissearch:6380",
 }
 
 func init() {
-	fmt.Printf("RedisConf:%v\n", RedisConf)
-	fmt.Printf("SonicConf:%v", SonicConf)
+	log.Println("RedisConf:", RedisConf)
+	log.Println("RedisConf:", RedisSearchConf)
 }

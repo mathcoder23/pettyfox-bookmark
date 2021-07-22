@@ -6,7 +6,6 @@ import (
 	bkSsearch "pettyfox.top/bookmark/modules/bookmark/bkSearch"
 	bookmarkController "pettyfox.top/bookmark/modules/bookmark/controller"
 	"pettyfox.top/bookmark/modules/redis"
-	"pettyfox.top/bookmark/modules/sonicCli"
 )
 
 func main() {
@@ -16,7 +15,6 @@ func main() {
 		AllowCredentials: true,
 	})
 	redis.InitRedis()
-	sonicCli.InitSonicCli()
 	bkSsearch.Init()
 	bookmarkApi := app.Party("/bookmark", crs).AllowMethods(iris.MethodOptions)
 	{
