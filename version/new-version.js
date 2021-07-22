@@ -52,13 +52,6 @@ readFileToArr(filepath,(arr)=>{
             console.log('新建版本号:'+cv)
         }
     })
-    fs.writeFile(versionPath, `export const webVersion = "${cv}"`, function (error) {
-        if (error) {
-            console.log('写入失败')
-        } else {
-            console.log('写入版本号:'+cv)
-        }
-    })
 })
 let format =  (date,fmt) =>{
     let ret;

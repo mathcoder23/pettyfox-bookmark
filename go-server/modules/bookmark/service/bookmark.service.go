@@ -75,7 +75,12 @@ func GetIndex(id string) map[string][]string {
 }
 func Search(k string) []bookmark.Bookmark {
 	ids := bkSsearch.Search(userId, k, 0, 20)
-
+	if len(ids) == 0 {
+		suggest := SearchSuggest(k)
+		if len(suggest) > 0 {
+			ids = bkSsearch.Search(userId, suggest[0], 0, 20)
+		}
+	}
 	//fmt.Printf("query:%v", ids)
 	bookmarkList := make([]bookmark.Bookmark, 0)
 	if len(ids) > 0 {
