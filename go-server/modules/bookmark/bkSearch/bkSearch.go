@@ -47,9 +47,10 @@ func RestIndex() {
 	} else {
 		log.Println("recreate index")
 	}
+	ac = redisearch.NewAutocompleter(conf.RedisSearchConf["address"], "bk_ac_1")
 }
 func RemoveDocIndex(bookmarkId string) {
-	rc.DeleteDocument(bookmarkId)
+	rc.DeleteDocument("bk_doc_"+bookmarkId)
 	//TODO 清理SUGGEST，根据推入的关键词计数器来清理，如果计数器为0，删除对应的建议，采用增强版的布隆过滤器
 }
 func SetDocIndex(userId string, bookmark bookmark.Bookmark) {
@@ -66,6 +67,9 @@ func SetDocIndex(userId string, bookmark bookmark.Bookmark) {
 		println(nameSplit, nameIndex)
 		//添加建议
 		for _, s := range nameSplit {
+			if len(s) <= 1 {
+				continue
+			}
 			err := ac.AddTerms(redisearch.Suggestion{Term: s, Score: 1})
 			if err != nil {
 				log.Println("suggest name err", err)
@@ -80,6 +84,9 @@ func SetDocIndex(userId string, bookmark bookmark.Bookmark) {
 
 		//添加建议
 		for _, s := range descSplit {
+			if len(s) <= 1 {
+				continue
+			}
 			ac.AddTerms(redisearch.Suggestion{Term: s, Score: 1})
 		}
 	}
@@ -89,6 +96,9 @@ func SetDocIndex(userId string, bookmark bookmark.Bookmark) {
 
 		//添加建议
 		for _, s := range urlSplit {
+			if len(s) <= 1 {
+				continue
+			}
 			ac.AddTerms(redisearch.Suggestion{Term: s, Score: 1})
 
 		}

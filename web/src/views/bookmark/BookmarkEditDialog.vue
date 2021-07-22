@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :visible="visible">
+    <el-dialog :visible="visible"  @close="visible=false">
         <bookmark-edit @close="visible=false" ref="edit" @update="$emit('update')"/>
     </el-dialog>
 </template>

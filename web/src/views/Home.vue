@@ -4,6 +4,7 @@
         <bookmark-index-dialog ref="indexDialog"/>
         <div style="display: flex;justify-content: flex-end">
             <el-button @click="clickResetIndex">重建索引</el-button>
+            <el-button @click="clickConfig">配置服务器</el-button>
         </div>
         <div class="search search--open">
             <form class="search__form" action="">
@@ -65,6 +66,7 @@
 <script>
     import BookmarkEditDialog from "./bookmark/BookmarkEditDialog";
     import BookmarkIndexDialog from "./bookmark/BookmarkIndexDialog";
+    import {CoreApi} from "../core/api/core/CoreApi";
 
     export default {
         name: "Home",
@@ -161,6 +163,18 @@
                             this.$message.error(rep.msg)
                         }
                     })
+                }).catch(() => {
+
+                });
+            },
+            clickConfig() {
+                this.$prompt('请输入服务器地址', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                }).then(({value}) => {
+                    CoreApi.init(value)
+                    this.$message.success("新地址：", +value)
+                    localStorage.setItem("baseUrl", value)
                 }).catch(() => {
 
                 });

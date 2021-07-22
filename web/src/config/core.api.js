@@ -4,7 +4,11 @@
 import {BookmarkApi} from "../api/BookmarkApi";
 import {CoreApi} from "../core/api/core/CoreApi";
 
-CoreApi.init("http://api.pettyfox.top:10004")
+let url = localStorage.getItem("baseUrl")
+if (!url) {
+    url = "http://api.pettyfox.top:10004"
+}
+CoreApi.init(url)
 export const MyApi = {
     //实现的方法写在其中
     BookmarkApi: BookmarkApi
