@@ -72,7 +72,7 @@
 
     export default {
         name: "Home",
-        components: {BookmarkIndexDialog, BookmarkEditDialog},
+        components: { BookmarkIndexDialog, BookmarkEditDialog},
         data() {
             return {
                 menuStyle: {},
@@ -262,7 +262,9 @@
         margin: 5em 0;
         width: 75%;
     }
-
+    .el-autocomplete-suggestion__list{
+        display: flex;
+    }
     .search__input input {
         outline: none;
         background-color: transparent;
@@ -276,6 +278,7 @@
         width: 100%;
         max-width: 1200px;
         color: white;
+        padding-bottom: 10px;
         border-bottom: 4px solid #13E8E9;
     }
 
