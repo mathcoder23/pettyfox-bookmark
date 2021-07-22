@@ -2,7 +2,8 @@
     <div @click="menuVisible=false">
         <bookmark-edit-dialog ref="dialog" @update="updateList"/>
         <bookmark-index-dialog ref="indexDialog"/>
-        <div style="display: flex;justify-content: flex-end">
+        <div style="display: flex;justify-content: flex-end;align-items: center;">
+            <span style="color:gray">API:{{baseUrl}}</span>
             <el-button @click="clickResetIndex">重建索引</el-button>
             <el-button @click="clickConfig">配置服务器</el-button>
         </div>
@@ -12,6 +13,7 @@
                 <!--                       placeholder="Search" autocomplete="off" autofocus="autofocus" autocapitalize="off"-->
                 <!--                       spellcheck="false">-->
                 <el-autocomplete
+                        clearable
                         class="search__input"
                         autofocus="autofocus"
                         v-model="search"
@@ -89,13 +91,19 @@
                 }, {
                     name: '个人'
                 }],
-                list: []
+                list: [],
+                baseUrl: ''
             }
         },
         mounted() {
             this.updateList()
+            this.baseUrl = localStorage.getItem("baseUrl")
         },
         methods: {
+            clearSearch() {
+                console.log('clear search')
+                this.search = ''
+            },
             formatText(text, len = 15) {
                 if (text) {
                     if (text.length > len) {
@@ -175,6 +183,7 @@
                     CoreApi.init(value)
                     this.$message.success("新地址：", +value)
                     localStorage.setItem("baseUrl", value)
+                    window.location.reload()
                 }).catch(() => {
 
                 });
