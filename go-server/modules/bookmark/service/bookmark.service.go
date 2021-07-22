@@ -9,7 +9,6 @@ import (
 	"pettyfox.top/bookmark/modules/bookmark"
 	bkSsearch "pettyfox.top/bookmark/modules/bookmark/bkSearch"
 	"pettyfox.top/bookmark/modules/redis"
-	"pettyfox.top/bookmark/modules/sonicCli"
 	"pettyfox.top/bookmark/modules/word"
 )
 
@@ -29,42 +28,16 @@ func Save(bookmark bookmark.Bookmark) {
 
 }
 func saveIndex(bookmark bookmark.Bookmark) {
-	if len(bookmark.Url) > 0 {
-		sonicCli.Push(KEY, "url", bookmark.Id, bookmark.Url)
-	}
-	if len(bookmark.Name) > 0 {
-		sonicCli.Push(KEY, "name", bookmark.Id, bookmark.Name)
-	}
-	if len(bookmark.Desc) > 0 {
-		sonicCli.Push(KEY, "url", bookmark.Id, bookmark.Desc)
-	}
-	bkSsearch.SetIndex(userId, bookmark)
+	bkSsearch.SetDocIndex(userId, bookmark)
 }
 func saveCoverIndex(bookmark bookmark.Bookmark) {
-	if len(bookmark.Id) == 0 {
-		return
-	}
-	if len(bookmark.Url) > 0 {
-		sonicCli.ResetIndex(KEY, "url", bookmark.Id)
-		sonicCli.Push(KEY, "url", bookmark.Id, bookmark.Url)
-	}
-	if len(bookmark.Name) > 0 {
-		sonicCli.ResetIndex(KEY, "name", bookmark.Id)
-		sonicCli.Push(KEY, "name", bookmark.Id, bookmark.Name)
-	}
-	if len(bookmark.Desc) > 0 {
-		sonicCli.ResetIndex(KEY, "desc", bookmark.Id)
-		sonicCli.Push(KEY, "desc", bookmark.Id, bookmark.Desc)
-	}
-	bkSsearch.SetIndex(userId, bookmark)
+	bkSsearch.SetDocIndex(userId, bookmark)
 }
 func Remove(params bookmark.IdsParams) {
 	rc := redis.RedisClient.Get()
 	defer rc.Close()
 	for i := 0; i < len(params.Ids); i++ {
-		sonicCli.ResetIndex(KEY, "desc", params.Ids[i])
-		sonicCli.ResetIndex(KEY, "name", params.Ids[i])
-		sonicCli.ResetIndex(KEY, "url", params.Ids[i])
+		bkSsearch.RemoveDocIndex(params.Ids[i])
 		rc.Do("hdel", KEY, params.Ids[i])
 	}
 }
@@ -101,11 +74,7 @@ func GetIndex(id string) map[string][]string {
 	return result
 }
 func Search(k string) []bookmark.Bookmark {
-	bkSsearch.Search(userId, k, 0, 20)
-	a1 := sonicCli.QUERY(KEY, "url", k)
-	a2 := sonicCli.QUERY(KEY, "desc", k)
-	a3 := sonicCli.QUERY(KEY, "name", k)
-	ids := mergeArr(a1, mergeArr(a2, a3))
+	ids := bkSsearch.Search(userId, k, 0, 20)
 
 	//fmt.Printf("query:%v", ids)
 	bookmarkList := make([]bookmark.Bookmark, 0)
@@ -130,16 +99,14 @@ func Search(k string) []bookmark.Bookmark {
 	return bookmarkList
 }
 func ResetIndex() {
-	sonicCli.ResetIndex(KEY, "", "")
-
+	bkSsearch.RestIndex()
 	bookmarks := List()
 	for _, b := range bookmarks {
 		saveIndex(b)
 	}
 }
 func SearchSuggest(keyword string) []string {
-
-	return nil
+	return bkSsearch.Suggest(userId, keyword, 0, 20)
 }
 func uniqueArr(m []string) []string {
 	d := make([]string, 0)
