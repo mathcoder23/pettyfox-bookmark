@@ -7,7 +7,6 @@ import (
 	"pettyfox.top/bookmark/conf"
 	"pettyfox.top/bookmark/modules/bookmark"
 	"pettyfox.top/bookmark/modules/word"
-	"strings"
 )
 
 var rc *redisearch.Client
@@ -21,7 +20,7 @@ func Init() {
 	sc = redisearch.NewSchema(redisearch.DefaultOptions).
 		AddField(redisearch.NewTextField("id")).
 		AddField(redisearch.NewTextField("desc")).
-		AddField(redisearch.NewTextFieldOptions("name", redisearch.TextFieldOptions{Weight: 5.0, Sortable: true})).
+		AddField(redisearch.NewTextField("name")).
 		AddField(redisearch.NewTextField("url"))
 	a, _ := ac.Length()
 	log.Println("suggest len:", a)
@@ -50,7 +49,7 @@ func RestIndex() {
 	ac = redisearch.NewAutocompleter(conf.RedisSearchConf["address"], "bk_ac_1")
 }
 func RemoveDocIndex(bookmarkId string) {
-	rc.DeleteDocument("bk_doc_"+bookmarkId)
+	rc.DeleteDocument("bk_doc_" + bookmarkId)
 	//TODO 清理SUGGEST，根据推入的关键词计数器来清理，如果计数器为0，删除对应的建议，采用增强版的布隆过滤器
 }
 func SetDocIndex(userId string, bookmark bookmark.Bookmark) {
@@ -63,13 +62,13 @@ func SetDocIndex(userId string, bookmark bookmark.Bookmark) {
 	urlIndex := ""
 	if len(bookmark.Name) > 0 {
 		nameSplit := word.Word2Index(bookmark.Name)
-		nameIndex = strings.Join(nameSplit, " ")
-		println(nameSplit, nameIndex)
+		log.Println("name :", nameSplit, nameIndex)
 		//添加建议
 		for _, s := range nameSplit {
 			if len(s) <= 1 {
 				continue
 			}
+			nameIndex += " " + s
 			err := ac.AddTerms(redisearch.Suggestion{Term: s, Score: 1})
 			if err != nil {
 				log.Println("suggest name err", err)
@@ -80,26 +79,36 @@ func SetDocIndex(userId string, bookmark bookmark.Bookmark) {
 	}
 	if len(bookmark.Desc) > 0 {
 		descSplit := word.Word2Index(bookmark.Desc)
-		descIndex = strings.Join(descSplit, " ")
 
 		//添加建议
 		for _, s := range descSplit {
 			if len(s) <= 1 {
 				continue
 			}
-			ac.AddTerms(redisearch.Suggestion{Term: s, Score: 1})
+			descIndex += " " + s
+			err := ac.AddTerms(redisearch.Suggestion{Term: s, Score: 1})
+			if err != nil {
+				log.Println("suggest desc err", err)
+			} else {
+				log.Println("suggest desc ok", s)
+			}
 		}
 	}
 	if len(bookmark.Url) > 0 {
 		urlSplit := word.Word2Index(bookmark.Url)
-		urlIndex = strings.Join(urlSplit, " ")
 
 		//添加建议
 		for _, s := range urlSplit {
 			if len(s) <= 1 {
 				continue
 			}
-			ac.AddTerms(redisearch.Suggestion{Term: s, Score: 1})
+			urlIndex += " " + s
+			err := ac.AddTerms(redisearch.Suggestion{Term: s, Score: 1})
+			if err != nil {
+				log.Println("suggest url err", err)
+			} else {
+				log.Println("suggest url ok", s)
+			}
 
 		}
 	}
@@ -108,16 +117,20 @@ func SetDocIndex(userId string, bookmark bookmark.Bookmark) {
 	doc.Set("id", bookmark.Id)
 	//建立索引
 	if len(nameIndex) > 0 {
+		log.Println("index name:", nameIndex)
 		doc.Set("name", nameIndex)
 	}
 	if len(urlIndex) > 0 {
+		log.Println("index url:", urlIndex)
 		doc.Set("url", urlIndex)
 	}
 	if len(descIndex) > 0 {
-		doc.Set("desc", urlIndex)
+		log.Println("index desc:", descIndex)
+		doc.Set("desc", descIndex)
 	}
+	log.Println("save index:", "bk_doc_"+bookmark.Id)
 	if err := rc.Index(doc); err != nil {
-		log.Fatal(err)
+		log.Println("save index", err)
 	}
 
 }
