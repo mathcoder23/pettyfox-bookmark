@@ -24,3 +24,5 @@ services:
       SONIC_PASSWORD: "SecretPassword"
     ports:
       - "10004:8080" # minio api server
+volumes:
+  rs_data:
