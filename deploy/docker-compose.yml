@@ -19,9 +19,7 @@ services:
       REDIS_ADDRESS: "172.17.0.2:10069"
       REDIS_AUTH: "redis"
       REDIS_DB: "2"
-      SONIC_HOST: "172.17.0.2"
-      SONIC_PORT: "1491"
-      SONIC_PASSWORD: "SecretPassword"
+      REDISSEARCH_ADDRESS: "redissearch:6379"
     ports:
       - "10004:8080" # minio api server
 volumes:

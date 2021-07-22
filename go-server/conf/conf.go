@@ -13,7 +13,7 @@ var RedisConf = map[string]string{
 	"auth":    os.Getenv("REDIS_AUTH"),
 }
 var RedisSearchConf = map[string]string{
-	"address": "redissearch:6380",
+	"address": os.Getenv("REDISSEARCH_ADDRESS"),
 }
 
 func init() {
